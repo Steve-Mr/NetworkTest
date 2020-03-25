@@ -1,6 +1,7 @@
 package com.maary.networktest;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
 
     TextView textView;
+    TextView darkThemeStateView;
     SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
@@ -23,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
         swipeRefreshLayout = findViewById(R.id.swipe);
 
         textView = findViewById(R.id.text);
+        darkThemeStateView = findViewById(R.id.theme_state);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -31,11 +34,13 @@ public class MainActivity extends AppCompatActivity {
                     swipeRefreshLayout.setRefreshing(true);
                 }
                 textView.setText(checkNetworkState());
+                textView.setText(checkDarkThemeState());
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
 
         textView.setText(checkNetworkState());
+        darkThemeStateView.setText(checkDarkThemeState());
 
     }
 
@@ -50,5 +55,20 @@ public class MainActivity extends AppCompatActivity {
             string = "METERED";
         }
         return string;
+    }
+
+    private String checkDarkThemeState(){
+        String darkModeState = "No Result";
+        Configuration configuration = getResources().getConfiguration();
+        int currentNightMode = configuration.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        switch (currentNightMode) {
+            case Configuration.UI_MODE_NIGHT_NO:
+                darkModeState = "Dark Mode OFF";
+                break;
+            case Configuration.UI_MODE_NIGHT_YES:
+                darkModeState = "Dark Mode ON";
+                break;
+        }
+        return darkModeState;
     }
 }
